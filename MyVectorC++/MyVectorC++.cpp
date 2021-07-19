@@ -46,9 +46,8 @@ public:
 		{
 			return;
 		}
-		CheckArray();
 
-		if (index == size + 1 || index == 0 && size == 0)
+		if (index == size || index == 0 && size == 0)
 		{
 			Push(value);
 			return;
@@ -60,17 +59,18 @@ public:
 		{
 			for (int i = 0; i < size; i++)
 			{
+				size++;
 				CheckArray();
 				if (current + 1 == index)
-				{
-					array[current++] = value;
+				{			
+					array[++current] = value;
+					return;
 				}
-				array[current++] = 0;
-				size++;
+				array[++current] = 0;
 			}
-			return;
 		}
 
+		CheckArray();
 		for (int i = 0; i < size && index <= current; i++)
 		{
 			array[current + 1] = array[current];
@@ -114,8 +114,7 @@ int main()
 	vector.Push(20);
 	vector.Push(30);
 	vector.Push(40);
-	vector.Push(50);
-	vector.Push(60);
+
 	vector.Insert(5,8);
 	vector.Print();
 }
