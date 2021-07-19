@@ -12,7 +12,7 @@ private:
 			array = new int[DEFAULT_ARRAY_SIZE];
 		}
 
-		if (size == capacity)
+		if (size <= capacity)
 		{
 			capacity *= CAPACITY_INCREASE;
 			int* newArray = new int[capacity];
@@ -57,10 +57,14 @@ public:
 
 		if (index > size)
 		{
+			if (index >= capacity)
+			{
+				capacity = index;
+				CheckArray();
+			}
 			for (int i = 0; i < size; i++)
 			{
 				size++;
-				CheckArray();
 				if (current + 1 == index)
 				{			
 					array[++current] = value;
@@ -78,6 +82,14 @@ public:
 		}
 		size++;
 		array[index] = value;
+	}
+
+	void Delete()
+	{
+		delete[] array;
+		array = nullptr;
+		capacity = DEFAULT_ARRAY_SIZE;
+		size = 0;
 	}
 
 	int Find(int FindNumber)
@@ -115,6 +127,6 @@ int main()
 	vector.Push(30);
 	vector.Push(40);
 
-	vector.Insert(5,8);
+	vector.Insert(5,1000);
 	vector.Print();
 }
