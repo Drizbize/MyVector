@@ -1,46 +1,18 @@
-﻿// MyVectorC++.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
 #include <iostream>
 
 class Vector
 {
-private:
-	void CheckArray()
-	{
-		if (!array)
-		{
-			array = new int[DEFAULT_ARRAY_SIZE];
-		}
-
-		if (size <= capacity)
-		{
-			if (size == capacity)
-			{
-				capacity *= CAPACITY_INCREASE;
-			}
-
-			int* newArray = new int[capacity];
-
-			for (int i = 0; i < size; i++)
-			{
-				newArray[i] = array[i];
-			}
-
-			delete[] array;
-			array = newArray;
-		}
-	}
 public:
 	const int DEFAULT_ARRAY_SIZE = 5;
 	const int CAPACITY_INCREASE = 2;
 
 	int capacity = DEFAULT_ARRAY_SIZE;
-	int size = 0;	
-	int* array;
+	int size = 0;
+	int* array = nullptr;
 
 	void Push(int value)
 	{
-		CheckArray();
+		CheckArray(size + 1);
 		array[size++] = value;
 	}
 
@@ -51,41 +23,36 @@ public:
 			return;
 		}
 
-		if (index == size || index == 0 && size == 0)
+		if (index == size)
 		{
 			Push(value);
 			return;
 		}
 
-		int current = size - 1;
 		if (index > size)
 		{
-			capacity = index;
-		}
+			CheckArray(index);
 
-		CheckArray();
-
-		if (index > size)
-		{
-			for (int i = 0; i < size; i++)
+			for (int i = size; i < index; i++)
 			{
-				size++;
-				if (current + 1 == index)
-				{			
-					array[++current] = value;
-					return;
-				}
-				array[++current] = 0;
+				array[i] = 0;
 			}
-		}
 
-		for (int i = 0; i < size && index <= current; i++)
-		{
-			array[current + 1] = array[current];
-			current--;
+			array[index] = value;
+			size = index + 1;
 		}
-		size++;
-		array[index] = value;
+		else
+		{
+			CheckArray(size + 1);
+
+			for (int i = size; i >= index; i--)
+			{
+				array[i + 1] = array[i];
+			}
+
+			array[index] = value;
+			size++;
+		}
 	}
 
 	void Delete()
@@ -121,6 +88,34 @@ public:
 		}
 		std::cout << "\n";
 	}
+
+private:
+	void CheckArray(int cap = 0)
+	{
+		if (!array)
+		{
+			array = cap < DEFAULT_ARRAY_SIZE ? new int[DEFAULT_ARRAY_SIZE] : new int[cap];
+			size = 0;
+		}
+
+		if (capacity <= cap)
+		{
+			while (capacity <= cap)
+			{
+				capacity *= CAPACITY_INCREASE;
+			}
+
+			int* newArray = new int[capacity];
+
+			for (int i = 0; i < size; i++)
+			{
+				newArray[i] = array[i];
+			}
+
+			delete[] array;
+			array = newArray;
+		}
+	}
 };
 
 int main()
@@ -131,6 +126,8 @@ int main()
 	vector.Push(30);
 	vector.Push(40);
 
-	vector.Insert(5, 1000);
+	vector.Insert(5, 0);
+	vector.Insert(15, 3);
+	vector.Insert(25, 20);
 	vector.Print();
 }
