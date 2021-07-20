@@ -14,7 +14,11 @@ private:
 
 		if (size <= capacity)
 		{
-			capacity *= CAPACITY_INCREASE;
+			if (size == capacity)
+			{
+				capacity *= CAPACITY_INCREASE;
+			}
+
 			int* newArray = new int[capacity];
 
 			for (int i = 0; i < size; i++)
@@ -127,6 +131,6 @@ int main()
 	vector.Push(30);
 	vector.Push(40);
 
-	vector.Insert(5,1000);
+	vector.Insert(5, 1000);
 	vector.Print();
 }
