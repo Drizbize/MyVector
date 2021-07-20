@@ -58,14 +58,15 @@ public:
 		}
 
 		int current = size - 1;
+		if (index > size)
+		{
+			capacity = index;
+		}
+
+		CheckArray();
 
 		if (index > size)
 		{
-			if (index >= capacity)
-			{
-				capacity = index;
-				CheckArray();
-			}
 			for (int i = 0; i < size; i++)
 			{
 				size++;
@@ -78,7 +79,6 @@ public:
 			}
 		}
 
-		CheckArray();
 		for (int i = 0; i < size && index <= current; i++)
 		{
 			array[current + 1] = array[current];
