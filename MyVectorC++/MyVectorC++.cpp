@@ -5,16 +5,17 @@
 class Vector
 {
 private:
-	void CheckArray()
+	void CheckArray(int cap = 0)
 	{
 		if (!array)
 		{
-			array = new int[DEFAULT_ARRAY_SIZE];
+			array = cap < DEFAULT_ARRAY_SIZE ? new int[DEFAULT_ARRAY_SIZE] : new int[cap];
+			size = 0;
 		}
 
-		if (size <= capacity)
+		if (capacity <= cap)
 		{
-			if (size == capacity)
+			while (capacity <= cap)
 			{
 				capacity *= CAPACITY_INCREASE;
 			}
@@ -35,12 +36,12 @@ public:
 	const int CAPACITY_INCREASE = 2;
 
 	int capacity = DEFAULT_ARRAY_SIZE;
-	int size = 0;	
-	int* array;
+	int size = 0;
+	int* array = nullptr;
 
 	void Push(int value)
 	{
-		CheckArray();
+		CheckArray(size + 1);
 		array[size++] = value;
 	}
 
@@ -51,41 +52,34 @@ public:
 			return;
 		}
 
-		if (index == size || index == 0 && size == 0)
+		if (index == size)
 		{
 			Push(value);
 			return;
 		}
 
-		int current = size - 1;
 		if (index > size)
 		{
-			capacity = index;
-		}
-
-		CheckArray();
-
-		if (index > size)
-		{
-			for (int i = 0; i < size; i++)
+			CheckArray(index);
+			for (int i = size; i < index; i++)
 			{
-				size++;
-				if (current + 1 == index)
-				{			
-					array[++current] = value;
-					return;
-				}
-				array[++current] = 0;
+				array[i] = 0;
 			}
+			array[index] = value;
+			size = index + 1;
+			return;
 		}
-
-		for (int i = 0; i < size && index <= current; i++)
+		else	
 		{
-			array[current + 1] = array[current];
-			current--;
+			CheckArray(size + 1);
+			for (int i = size; i >= index; i--)
+			{
+				array[i + 1] = array[i];
+			}
+			return;
 		}
-		size++;
 		array[index] = value;
+		size++;
 	}
 
 	void Delete()
@@ -131,6 +125,6 @@ int main()
 	vector.Push(30);
 	vector.Push(40);
 
-	vector.Insert(5, 1000);
+	vector.Insert(5,111);
 	vector.Print();
 }
